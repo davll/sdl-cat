@@ -57,19 +57,32 @@ int main()
     SDL_FreeSurface(bmp);
 
     bool quit = false;
+    bool repaint = true;
     while (!quit) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
-                case SDL_QUIT:
+            case SDL_QUIT:
+                quit = true;
+                break;
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym) {
+                case SDLK_ESCAPE:
                     quit = true;
                     break;
+                case SDLK_SPACE:
+                    repaint = !repaint;
+                    break;
+                }
+                break;
             }
         }
 
-        SDL_RenderClear(ren);
-        SDL_RenderCopy(ren, tex, NULL, NULL);
-        SDL_RenderPresent(ren);
+        if (repaint) {
+            SDL_RenderClear(ren);
+            SDL_RenderCopy(ren, tex, NULL, NULL);
+            SDL_RenderPresent(ren);
+        }
     }
 
     SDL_DestroyTexture(tex);
